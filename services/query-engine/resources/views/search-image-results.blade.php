@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="apple-touch-icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="mask-icon" type="image/svg+xml" href="{{asset('favicon.svg')}}" color="#000000">
     <title>Search Image Results for "{{ $query }}"</title>
 </head>
 
