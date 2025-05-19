@@ -6,6 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/app.css')
     <title>Life Ain't Cringe</title>
+    <style>
+        @media (max-width: 768px) {
+            .responsive-wrapper {
+                flex-direction: column;
+            }
+
+            .responsive-wrapper > * {
+                width: 100% !important;
+            }
+
+            #cringe-title {
+                font-size: 1.75rem;
+                padding: 0 1rem;
+            }
+
+            #note {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
 </head>
 
 <body class="min-h-screen font-mono" style="background-color: var(--bg); color: var(--text);">
@@ -17,7 +37,7 @@
     </h1>
 
     <div class="flex justify-center px-4">
-        <div class="flex w-full max-w-6xl gap-6">
+        <div class="flex w-full max-w-6xl gap-6 responsive-wrapper">
             <!-- Top Searches -->
             <div class="w-2/5 p-4 rounded-xl shadow-lg border"
                 style="background-color: var(--bg-2); border-color: var(--orange);">
@@ -42,16 +62,6 @@
                             id="github">GitHub
                             issue</a>.
                     </p>
-                    {{-- @foreach ($topSearches as $search)
-                        <li>
-                            <a href="{{ route('search_force', ['processed_query' => $search]) }}"
-                                class="transition hover:underline" style="color: var(--text);"
-                                onmouseover="this.style.color='var(--orange)';"
-                                onmouseout="this.style.color='var(--text)';">
-                                - {{ $search }}
-                            </a>
-                        </li>
-                    @endforeach --}}
                 </ul>
             </div>
 
@@ -69,9 +79,7 @@
                         </div>
                         <div class="mt-4 text-lg" style="color: var(--text);">
                             <p>
-                                {{-- use only the first 300 characters of summary text --}}
                                 @if ($randomPage['summary_text'] != null)
-                                    {{-- use Str::limit to limit the summary text to 600 characters --}}
                                     {{ Str::limit($randomPage['summary_text'], 600, '...') }}
                                 @else
                                     No summary available.
@@ -99,3 +107,4 @@
 </body>
 
 </html>
+
