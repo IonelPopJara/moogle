@@ -377,3 +377,122 @@ body::before {
         background-size: 100% 4px;
     }
 }
+@media (max-width: 768px) {
+     .results-container {
+         @apply grid-cols-1 px-4;
+     }
+
+     .pages-container {
+         @apply pr-0;
+     }
+
+     .images-container {
+         border-left: none;
+         border-top: solid var(--button) 0.1rem;
+         @apply w-full pl-0 pt-5 mt-5;
+     }
+
+     .results-counter {
+         @apply mx-4 my-2 text-sm;
+     }
+
+     .result-container {
+         @apply mb-3;
+     }
+
+     .result-title {
+         @apply text-base;
+     }
+
+     .result-text {
+         @apply text-xs;
+     }
+
+     .result-url {
+         @apply text-xs;
+     }
+
+     .top-images-text {
+         @apply text-2xl mb-3;
+     }
+
+     .image {
+         @apply w-full;
+     }
+
+     .image p.img-title {
+         @apply text-sm;
+     }
+
+     .image p.img-text {
+         @apply text-xs;
+     }
+
+     footer {
+         @apply px-4;
+     }
+
+     footer p {
+         @apply text-xs;
+     }
+
+     .moogle-bar-container {
+         @apply px-2;
+     }
+
+     #search-bar {
+         @apply w-full;
+     }
+
+     .bottom-part {
+         @apply ml-0 justify-center;
+     }
+ }
+
+ /* Additional responsive breakpoints */
+ @media (min-width: 769px) and (max-width: 1024px) {
+     .results-container {
+         @apply grid-cols-2 px-6;
+     }
+
+     .images-container {
+         @apply w-80;
+     }
+ }
+
+ /* Responsive styles for image search results */
+ @media (max-width: 768px) {
+     .results-images-container {
+         @apply px-4;
+     }
+
+     .results-images-container ul {
+         @apply gap-2;
+     }
+
+     .results-images-container li {
+         @apply w-1/2 m-1;
+     }
+
+     .image {
+         @apply w-full;
+     }
+
+     .image p.img-title {
+         @apply text-sm;
+     }
+
+     .image p.img-text {
+         @apply text-xs;
+     }
+
+     .moogle-letter {
+         @apply text-4xl;
+     }
+ }
+
+ @media (min-width: 769px) and (max-width: 1024px) {
+     .results-images-container li {
+         @apply w-1/4;
+     }
+ }

@@ -6,62 +6,111 @@
             $currentPath = request()->path();
             $currentSearchFunction = explode('/', $currentPath)[1];
         @endphp
-        {{-- TODO: Change this for the actual url --}}
+
         <a href="https://moogle.app/" class="logo-container">
             Moogle!
         </a>
+
         @php
             $currentAction = '/api/search';
             if ($currentSearchFunction == 'search_images') {
                 $currentAction = '/api/search_images';
             }
         @endphp
-        <form action="{{ $currentAction }}" method="GET" class="px-3">
+
+        <form action="{{ $currentAction }}" method="GET" class="search-form px-3">
             <input type="text" id="search-bar" name="q" placeholder="Search..." autocomplete="off" />
-            {{-- add search results --}}
             <div id="search-suggestions" class="absolute bg-white search-results hidden">
                 <ul id="search-suggestions-list"></ul>
             </div>
-            <button type="submit" class="btn" id="search-button">
-                Moogle it!
-            </button>
-            <button type="button" class="btn" onclick="window.location.href='/api/cringe'">
-                Life ain't cringe!
-            </button>
-        </form>
 
+                <button type="submit" class="btn" id="search-button">
+                    Moogle it!
+                </button>
+                <button type="button" class="btn" onclick="window.location.href='/api/cringe'">
+                    Life ain't cringe!
+                </button>
+        </form>
     </div>
+
     <div class="bottom-part">
         @php
-            $searchQuery = $currentQuery;
-            if (empty($searchQuery)) {
-                $searchQuery = request()->query('processed_query');
-            }
-
+            $searchQuery = $currentQuery ?: request()->query('processed_query');
             $images_url = '/api/search_images?q=' . $searchQuery;
             $pages_url = '/api/search?q=' . $searchQuery;
-
-            $imagesActive = '';
-            $pagesActive = '';
-            if ($currentSearchFunction == 'search') {
-                $imagesActive = '';
-                $pagesActive = 'active';
-            } else {
-                $imagesActive = 'active';
-                $pagesActive = '';
-            }
+            $imagesActive = $currentSearchFunction !== 'search' ? 'active' : '';
+            $pagesActive = $currentSearchFunction === 'search' ? 'active' : '';
         @endphp
+
         <a href="{{ $pages_url }}" class="tab {{ $pagesActive }}">
-            <span> PAGES </span>
+            <span>PAGES</span>
         </a>
         <a href="{{ $images_url }}" class="tab {{ $imagesActive }}">
-            <span> IMAGES </span>
+            <span>IMAGES</span>
         </a>
     </div>
 </div>
 
+<style>
+/* MOBILE STYLES ONLY */
+@media (max-width: 768px) {
+    .moogle-bar-container {
+        padding: 1rem;
+    }
+
+    .top-part {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .logo-container {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .search-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .search-form input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .button-group .btn {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .bottom-part {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .bottom-part .tab {
+        text-align: center;
+        padding: 0.75rem;
+        font-weight: bold;
+    }
+}
+</style>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const searchBar = document.getElementById('search-bar');
         const resultsContainer = document.getElementById('search-suggestions');
         const resultsList = document.getElementById('search-suggestions-list');
@@ -72,97 +121,65 @@
             debounceTimer = setTimeout(func, delay);
         }
 
-        // Event listeners
-        searchBar.addEventListener('input', function() {
+        searchBar.addEventListener('input', function () {
             debounce(() => {
                 if (searchBar.value.length >= 2) {
                     fetchSuggestions(searchBar.value);
                 } else {
-                    fetchTopSearches();
+                    resultsContainer.classList.add('hidden');
                 }
             }, 300);
         });
 
-        searchBar.addEventListener('focus', function() {
-            if (searchBar.value.length < 2) {
-                fetchTopSearches();
-            } else {
+        searchBar.addEventListener('focus', function () {
+            if (searchBar.value.length >= 2) {
                 fetchSuggestions(searchBar.value);
             }
         });
 
-        // Hide results when clicking outside the search bar
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             if (!resultsContainer.contains(event.target) && event.target !== searchBar) {
-                hideResults();
+                resultsContainer.classList.add('hidden');
             }
         });
 
-        // Hide results when pressing escape
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
-                hideResults();
-                // unfocus the search bar
+                resultsContainer.classList.add('hidden');
                 searchBar.blur();
             }
         });
 
-        function hideResults() {
-            resultsContainer.classList.add('hidden');
-        }
-
-        // Fetch search suggestions
         function fetchSuggestions(query) {
             fetch(`{{ route('get.search.suggestions') }}?q=${encodeURIComponent(query)}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to fetch search results');
+                        throw new Error('Failed to fetch');
                     }
                     return response.json();
                 })
                 .then(data => {
                     displayResults(data.searches);
                 })
-                .catch(error => {
-                    hideResults();
-                    console.error(error);
+                .catch(() => {
+                    resultsContainer.classList.add('hidden');
                 });
         }
 
         function displayResults(results) {
             resultsList.innerHTML = '';
-
             results.forEach(result => {
                 const li = document.createElement('li');
                 li.className = 'search-suggestion';
                 li.textContent = result;
-
-                li.addEventListener('click', function() {
+                li.onclick = () => {
                     searchBar.value = result;
-                    hideResults();
-                });
-
+                    resultsContainer.classList.add('hidden');
+                };
                 resultsList.appendChild(li);
             });
-
             resultsContainer.classList.remove('hidden');
-        }
-
-        function fetchTopSearches() {
-            // fetch(`{{ route('get.top.searches') }}`)
-            //     .then(response => {
-            //         if (!response.ok) {
-            //             throw new Error('Failed to fetch top searches');
-            //         }
-            //         return response.json();
-            //     })
-            //     .then(data => {
-            //         displayResults(data.searches);
-            //     })
-            //     .catch(error => {
-            //         hideResults();
-            //         console.error(error);
-            //     });
         }
     });
 </script>
+
