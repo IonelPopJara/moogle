@@ -1,5 +1,14 @@
 # MOOGLE - The Worst Best Search Engine
 
+```
+IMPORTANT NOTE!!!
+> After a few weeks of testing moogle, the main server has been shutdown indefinetly.
+  This was just a prototype so I had no intentions in keeping it running forever.
+  Thanks to all the people who contributed and wanted to contribute. Moogle was
+  published two weeks before my thesis deadline so I didn't really have the time or
+  energy to look at the requests.
+```
+
 Moogle is a search engine designed for educational purposes. Inspired by early 2000s web architecture, Moogle aims to emulate a minimal but functional version of the search engine pipeline: crawling, indexing, and querying the web.
 
 You can find the live version of Moogle at [moogle.app](https://moogle.app).
