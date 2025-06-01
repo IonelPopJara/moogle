@@ -149,20 +149,20 @@
         }
 
         function fetchTopSearches() {
-            fetch(`{{ route('get.top.searches') }}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch top searches');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    displayResults(data.searches);
-                })
-                .catch(error => {
-                    hideResults();
-                    console.error(error);
-                });
+            // fetch(`{{ route('get.top.searches') }}`)
+            //     .then(response => {
+            //         if (!response.ok) {
+            //             throw new Error('Failed to fetch top searches');
+            //         }
+            //         return response.json();
+            //     })
+            //     .then(data => {
+            //         displayResults(data.searches);
+            //     })
+            //     .catch(error => {
+            //         hideResults();
+            //         console.error(error);
+            //     });
         }
     });
 </script>

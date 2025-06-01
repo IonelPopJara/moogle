@@ -26,6 +26,22 @@
     --another: #394b70;
 }
 
+#note {
+    color: var(--color-red-500);
+    background-color: black;
+    padding: 1rem;
+    border: #c0caf5 solid 0.1rem;
+    border-radius: 0.5rem;
+}
+
+#github {
+    color: var(--blue);
+}
+
+#github:hover {
+    color: var(--color-blue-500);
+}
+
 #cringe-title {
     color: var(--text);
     background-color: var(--another);
@@ -238,12 +254,8 @@ footer a {
 #search-suggestions {
     background-color: var(--text);
     color: var(--bg);
+    z-index: 1000;
     @apply border border-gray-400 w-140 h-auto;
-
-}
-
-#search-suggestions-list {
-
 }
 
 .search-suggestion {

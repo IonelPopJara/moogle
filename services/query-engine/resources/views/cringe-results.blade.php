@@ -30,11 +30,19 @@
                     </p>
                 </div>
                 <h2 id="cringe-top-searches" class="text-2xl mb-4 font-semibold" style="color: var(--orange);">
-                    Top Searches
+                    Top Searches (Deprecated Feature)
                 </h2>
 
                 <ul class="space-y-2">
-                    @foreach ($topSearches as $search)
+                    <p id="note">
+                        Due to the top searches being used for spam and displaying inappropriate results, the top
+                        searches feature has been disabled.<br>
+                        If you'd like to contribute a new feature to replace it, you can go to the
+                        related <a href="https://github.com/IonelPopJara/moogle/issues/7" target="_blank"
+                            id="github">GitHub
+                            issue</a>.
+                    </p>
+                    {{-- @foreach ($topSearches as $search)
                         <li>
                             <a href="{{ route('search_force', ['processed_query' => $search]) }}"
                                 class="transition hover:underline" style="color: var(--text);"
@@ -43,7 +51,7 @@
                                 - {{ $search }}
                             </a>
                         </li>
-                    @endforeach
+                    @endforeach --}}
                 </ul>
             </div>
 
