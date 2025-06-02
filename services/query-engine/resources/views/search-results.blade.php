@@ -40,7 +40,7 @@
                 <p>No results found</p>
             @endif
         </div>
-        @if ($page != null && $page == 1)
+        @if ($page != null)
             <div class="images-container flex flex-col items-center">
                 <h2 class="top-images-text"> {{ ucwords($query) }} </h2>
                 @foreach ($topImages as $res)
