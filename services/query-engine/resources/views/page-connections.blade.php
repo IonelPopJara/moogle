@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Graph View</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="alternate icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="mask-icon" type="image/svg+xml" href="{{asset('favicon.svg')}}" color="#000000">
     <style>
         html {
             color: black;
