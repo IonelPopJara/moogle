@@ -3,17 +3,19 @@
 extern crate redis;
 use redis::Commands;
 use std::env;
-use std::{thread, time};
-use std::process::Command;
 use std::process;
-
+use std::process::Command;
+use std::{thread, time};
 
 fn main() {
     // Get environment variable
     let redis_host = env::var("REDIS_HOST").expect("REDIS_HOST environment variable not set");
     let redis_port = env::var("REDIS_PORT").unwrap_or_else(|_| "6379".to_string());
     let redis_password = env::var("REDIS_PASSWORD").unwrap_or_else(|_| "".to_string());
-    let redis_db : u8 = env::var("REDIS_DB").unwrap_or("0".to_string()).parse().expect("REDIS_DB must be a valid integer");
+    let redis_db: u8 = env::var("REDIS_DB")
+        .unwrap_or("0".to_string())
+        .parse()
+        .expect("REDIS_DB must be a valid integer");
 
     // Build the Redis URL
     let mut redis_url = format!("redis://{}:{}", redis_host, redis_port);
@@ -63,9 +65,12 @@ fn main() {
         }
 
         // Get the length of the url_queue
-        let url_queue_length: usize = con.zcard("spider_queue").expect("Failed to get queue length");
+        let url_queue_length: usize = con
+            .zcard("spider_queue")
+            .expect("Failed to get queue length");
         // Get the length of the indexer_queue
-        let indexer_queue_length: usize = con.llen("pages_queue").expect("Failed to get queue length");
+        let indexer_queue_length: usize =
+            con.llen("pages_queue").expect("Failed to get queue length");
         // Get the count of backlinks keys
         let backlinks_count: usize = get_backlinks_count(&mut con);
 
@@ -97,8 +102,8 @@ fn main() {
                 1
             } else {
                 std::cmp::min(
-                    max_indexers, 
-                    (1.5 * (indexer_queue_length as f64 / 100.0)).ceil() as usize
+                    max_indexers,
+                    (1.5 * (indexer_queue_length as f64 / 100.0)).ceil() as usize,
                 )
             }
         };
@@ -110,10 +115,17 @@ fn main() {
         scale_indexers(desired_indexers);
 
         // Scale backlinks processors
-        let desired_backlinks_processors = calculate_desired_backlinks_processors(backlinks_count, max_backlinks_processors);
+        let desired_backlinks_processors =
+            calculate_desired_backlinks_processors(backlinks_count, max_backlinks_processors);
         let current_backlinks_processors = get_current_backlinks_processors();
-        println!("| Current backlinks processors: {}", current_backlinks_processors);
-        println!("|\tDesired backlinks processors count: {}", desired_backlinks_processors);
+        println!(
+            "| Current backlinks processors: {}",
+            current_backlinks_processors
+        );
+        println!(
+            "|\tDesired backlinks processors count: {}",
+            desired_backlinks_processors
+        );
         scale_backlinks_processors(desired_backlinks_processors);
 
         println!("|--------------------------------------|");
@@ -163,7 +175,7 @@ fn scale_backlinks_processors(desired_processors: usize) {
         Command::new("docker")
             .arg("compose")
             .arg("-f")
-            .arg("../backlinks-processor/docker-compose.yml")  // Specify the backlinks service compose file
+            .arg("../backlinks-processor/docker-compose.yml") // Specify the backlinks service compose file
             .arg("up")
             //.arg("--scale")
             //.arg(format!("backlinks-processor={}", desired_processors))
@@ -177,14 +189,15 @@ fn get_current_backlinks_processors() -> usize {
     let output = Command::new("docker")
         .arg("compose")
         .arg("-f")
-        .arg("../backlinks-processor/docker-compose.yml")  // Specify the backlinks service compose file
+        .arg("../backlinks-processor/docker-compose.yml") // Specify the backlinks service compose file
         .arg("ps")
         .output()
         .expect("Failed to get Docker Compose services");
 
     let output_str = String::from_utf8_lossy(&output.stdout);
 
-    output_str.split('\n')
+    output_str
+        .split('\n')
         .filter(|line| line.contains("backlinks-processor"))
         .count()
 }
@@ -194,7 +207,7 @@ fn stop_backlinks_processors() {
     Command::new("docker")
         .arg("compose")
         .arg("-f")
-        .arg("../backlinks-processor/docker-compose.yml")  // Specify the backlinks service compose file
+        .arg("../backlinks-processor/docker-compose.yml") // Specify the backlinks service compose file
         .arg("down")
         .status()
         .expect("Failed to stop backlinks processors");
@@ -216,7 +229,7 @@ fn scale_spiders(desired_spiders: usize) {
         Command::new("docker")
             .arg("compose")
             .arg("-f")
-            .arg("../spider/docker-compose.yml")  // Specify the indexer service compose file
+            .arg("../spider/docker-compose.yml") // Specify the indexer service compose file
             .arg("up")
             .arg("--scale")
             .arg(format!("spider-service={}", desired_spiders))
@@ -230,14 +243,15 @@ fn get_current_spiders() -> usize {
     let output = Command::new("docker")
         .arg("compose")
         .arg("-f")
-        .arg("../spider/docker-compose.yml")  // Specify the indexer service compose file
+        .arg("../spider/docker-compose.yml") // Specify the indexer service compose file
         .arg("ps")
         .output()
         .expect("Failed to get Docker Compose services");
 
     let output_str = String::from_utf8_lossy(&output.stdout);
 
-    output_str.split('\n')
+    output_str
+        .split('\n')
         .filter(|line| line.contains("spider-service"))
         .count()
 }
@@ -250,7 +264,7 @@ fn scale_indexers(desired_indexers: usize) {
         Command::new("docker")
             .arg("compose")
             .arg("-f")
-            .arg("../indexer/docker-compose.yml")  // Specify the indexer service compose file
+            .arg("../indexer/docker-compose.yml") // Specify the indexer service compose file
             .arg("up")
             .arg("--scale")
             .arg(format!("indexer-service={}", desired_indexers))
@@ -265,7 +279,7 @@ fn stop_indexers() {
     Command::new("docker")
         .arg("compose")
         .arg("-f")
-        .arg("../indexer/docker-compose.yml")  // Specify the indexer service compose file
+        .arg("../indexer/docker-compose.yml") // Specify the indexer service compose file
         .arg("down")
         .status()
         .expect("Failed to stop indexers");
@@ -276,7 +290,7 @@ fn stop_spiders() {
     Command::new("docker")
         .arg("compose")
         .arg("-f")
-        .arg("../spider/docker-compose.yml")  // Specify the indexer service compose file
+        .arg("../spider/docker-compose.yml") // Specify the indexer service compose file
         .arg("down")
         .status()
         .expect("Failed to stop spiders");
@@ -286,14 +300,15 @@ fn get_current_indexers() -> usize {
     let output = Command::new("docker")
         .arg("compose")
         .arg("-f")
-        .arg("../indexer/docker-compose.yml")  // Specify the indexer service compose file
+        .arg("../indexer/docker-compose.yml") // Specify the indexer service compose file
         .arg("ps")
         .output()
         .expect("Failed to get Docker Compose services");
 
     let output_str = String::from_utf8_lossy(&output.stdout);
 
-    output_str.split('\n')
+    output_str
+        .split('\n')
         .filter(|line| line.contains("indexer-service"))
         .count()
 }

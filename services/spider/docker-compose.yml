@@ -1,7 +1,21 @@
 services:
+  valkey:
+    image: valkey/valkey:latest
+    container_name: valkey
+    networks:
+      - shared-net
+    restart: unless-stopped
   spider-service:
     build: .
     # image: ghcr.io/ionelpopjara/moogle/spider:latest
     env_file: "variables.env"
-    deploy:
-      replicas: 1
+    depends_on:
+      - valkey
+    environment:
+      - REDIS_HOST=valkey
+    networks:
+      - shared-net
+
+networks:
+  shared-net:
+    external: true

@@ -1,13 +1,13 @@
-import time
 import logging
-import pymongo
+import time
+from typing import Dict, List, Optional, Set
 
-from typing import Optional, List, Set, Dict
-from models.page import Page
+import pymongo
+from pymongo import UpdateOne
+
 from models.metadata import Metadata
 from models.outlinks import Outlinks
-
-from pymongo import UpdateOne
+from models.page import Page
 
 # SETUP LOGGER
 logger = logging.getLogger(__name__)

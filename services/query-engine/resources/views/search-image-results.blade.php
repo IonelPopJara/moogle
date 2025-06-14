@@ -8,8 +8,9 @@
     <title>Search Image Results for "{{ $query }}"</title>
 </head>
 
-<body>
+<body class="min-h-screen flex flex-col">
     <x-moogle-bar />
+
     <div class="results-counter">
         @php
             $suggestion = '';
@@ -20,7 +21,7 @@
         <span id="suggestion">{{ $suggestion }}</span><span>Showing {{ $total }} results for
             {{ $query }}</span>
         @if ($suggestions)
-            <p>Search for <a id="suggestion-link"
+            <p class="mt-2">Search for <a id="suggestion-link"
                     href="{{ route('search_images_force', ['processed_query' => $originalQuery]) }}">{{ $originalQuery }}</a>
                 instead
             </p>
@@ -28,19 +29,19 @@
     </div>
     <div class="results-images-container">
         @if (count($results) > 0)
-            <ul class="flex flex-wrap gap-4">
+            <ul class="flex flex-wrap justify-center">
                 @foreach ($results as $res)
-                    <li class="m-2 flex-shrink-0 w-1/6">
+                    <li >
                         <x-image-container url="{{ $res->_id }}" alt="{{ $res->alt }}"
                             title="{{ $res->page_title }}" page="{{ $res->page_url }}" text="{{ $res->page_text }}" />
                     </li>
                 @endforeach
             </ul>
         @else
-            <p>No results found</p>
+            <p class="text-center">No results found</p>
         @endif
     </div>
-    <div class="flex flex-col justify-center items-center">
+    <div class="flex flex-col justify-center items-center mt-8">
         <x-pagination-bar totalResults="{{ $total }}" />
     </div>
     <!-- Footer -->
